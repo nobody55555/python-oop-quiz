@@ -24,7 +24,7 @@ This is a self-contained HTML5 quiz application that helps you master Python OOP
 
 ## 🚀 Try it Live
 
-**[Launch the Quiz](https://yourusername.github.io/python-oop-quiz/)**
+**[Launch the Quiz](https://nobody55555.github.io/python-oop-quiz/)**
 
 ## 📖 How to Use
 
@@ -131,7 +131,7 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 📧 Contact
 
-If you have questions or feedback, please [open an issue](https://github.com/yourusername/python-oop-quiz/issues) on GitHub.
+If you have questions or feedback, please [open an issue](https://github.com/nobody55555/python-oop-quiz/issues) on GitHub.
 
 ---
 
