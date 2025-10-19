@@ -1,0 +1,958 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Python OOP System Monitor - Flashcard Quiz</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style type="text/css">
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    background-color: #f8f9fa;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding: 30px;
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    font-size: 28px;
+}
+
+h2 {
+    color: #34495e;
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+h3 {
+    color: #34495e;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+/* Navigation and controls */
+.controls {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    margin: 5px;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #2980b9;
+}
+
+.btn-success {
+    background-color: #27ae60;
+}
+
+.btn-success:hover {
+    background-color: #229954;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
+.btn-secondary {
+    background-color: #95a5a6;
+}
+
+.btn-secondary:hover {
+    background-color: #7f8c8d;
+}
+
+/* Stats display */
+.stats {
+    background: #ecf0f1;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.stats div {
+    display: inline-block;
+    margin: 0 20px;
+    font-weight: bold;
+}
+
+.stats .label {
+    color: #7f8c8d;
+    font-weight: normal;
+    font-size: 14px;
+}
+
+.stats .value {
+    color: #2c3e50;
+    font-size: 18px;
+}
+
+/* Flashcard styles */
+.flashcard {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    margin: 20px 0;
+    perspective: 1000px;
+}
+
+.flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+    cursor: pointer;
+}
+
+.flashcard.flipped .flashcard-inner {
+    transform: rotateY(180deg);
+}
+
+.flashcard-front, .flashcard-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border: 2px solid #3498db;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.flashcard-back {
+    transform: rotateY(180deg);
+    background: #f8f9fa;
+}
+
+.question-text {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.code-example {
+    background: #2c3e50;
+    color: #ecf0f1;
+    padding: 15px;
+    border-radius: 5px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    margin-top: 15px;
+    white-space: pre-wrap;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.answer-text {
+    font-size: 18px;
+    color: #34495e;
+    margin-bottom: 15px;
+}
+
+.category-badge {
+    background: #e74c3c;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+.difficulty-badge {
+    background: #f39c12;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+}
+
+/* Response buttons */
+.response-buttons {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.response-buttons .btn {
+    margin: 0 10px;
+    font-size: 18px;
+    padding: 15px 30px;
+}
+
+/* Round summary */
+.round-summary {
+    background: #ecf0f1;
+    padding: 25px;
+    border-radius: 10px;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.summary-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.summary-stat {
+    text-align: center;
+    margin: 10px;
+}
+
+.summary-stat .number {
+    font-size: 32px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.summary-stat .label {
+    font-size: 14px;
+    color: #7f8c8d;
+}
+
+/* Lesson display */
+.lesson {
+    background: #d5f4e6;
+    border-left: 4px solid #27ae60;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 5px;
+}
+
+.lesson h3 {
+    color: #27ae60;
+    margin-bottom: 10px;
+}
+
+/* Screen management */
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
+}
+
+/* Welcome screen */
+.welcome-content {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.welcome-content p {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #34495e;
+}
+
+/* Progress indicator */
+.progress {
+    width: 100%;
+    height: 20px;
+    background-color: #ecf0f1;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 20px 0;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: #3498db;
+    transition: width 0.3s ease;
+    border-radius: 10px;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 600px) {
+    .container {
+        margin: 10px;
+        padding: 20px;
+    }
+    
+    .flashcard {
+        height: 350px;
+    }
+    
+    .question-text {
+        font-size: 18px;
+    }
+    
+    .summary-stats {
+        flex-direction: column;
+    }
+    
+    .btn {
+        display: block;
+        margin: 10px auto;
+        width: 200px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Python OOP System Monitor Quiz</h1>
+    
+    <!-- Welcome Screen -->
+    <div id="welcome-screen" class="screen active">
+        <div class="welcome-content">
+            <h2>Master Python OOP System Monitoring</h2>
+            <p>Learn Python OOP concepts through interactive flashcards focused on system monitoring with psutil and pynvml.</p>
+            <p><strong>How it works:</strong></p>
+            <ul style="text-align: left; max-width: 500px; margin: 0 auto;">
+                <li>Answer 5 flashcard questions per round</li>
+                <li>Score 70%+ to advance to the next level</li>
+                <li>Missed questions will be repeated until mastered</li>
+                <li>Get personalized lessons after each round</li>
+                <li>Track your progress as you learn</li>
+            </ul>
+            <div class="controls">
+                <button class="btn" onclick="startQuiz()">Start Quiz</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quiz Screen -->
+    <div id="quiz-screen" class="screen">
+        <div class="stats">
+            <div>
+                <div class="label">Level</div>
+                <div class="value" id="current-level">1</div>
+            </div>
+            <div>
+                <div class="label">Score</div>
+                <div class="value" id="total-score">0</div>
+            </div>
+            <div>
+                <div class="label">Question</div>
+                <div class="value"><span id="current-question">1</span> of <span id="total-questions">5</span></div>
+            </div>
+        </div>
+        
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        
+        <div class="flashcard" id="flashcard" onclick="flipCard()">
+            <div class="flashcard-inner">
+                <div class="flashcard-front">
+                    <div class="difficulty-badge" id="difficulty-badge">Beginner</div>
+                    <div class="category-badge" id="category-badge">Category</div>
+                    <div class="question-text" id="question-text">Click to start</div>
+                    <div class="code-example" id="code-example" style="display: none;"></div>
+                    <p style="margin-top: 20px; font-style: italic; color: #7f8c8d;">Click to flip and see the answer</p>
+                </div>
+                <div class="flashcard-back">
+                    <div class="answer-text" id="answer-text">Answer will appear here</div>
+                    <div class="code-example" id="answer-code" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="response-buttons" id="response-buttons" style="display: none;">
+            <button class="btn btn-success" onclick="markAnswer(true)">✓ Correct</button>
+            <button class="btn btn-danger" onclick="markAnswer(false)">✗ Missed</button>
+        </div>
+        
+        <div class="controls">
+            <button class="btn btn-secondary" onclick="resetGame()">Reset Progress</button>
+        </div>
+    </div>
+    
+    <!-- Round Summary Screen -->
+    <div id="summary-screen" class="screen">
+        <div class="round-summary">
+            <h2 id="summary-title">Round Complete!</h2>
+            <div class="summary-stats">
+                <div class="summary-stat">
+                    <div class="number" id="correct-count">0</div>
+                    <div class="label">Correct</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="number" id="missed-count">0</div>
+                    <div class="label">Missed</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="number" id="percentage-score">0%</div>
+                    <div class="label">Score</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="number" id="round-points">0</div>
+                    <div class="label">Points</div>
+                </div>
+            </div>
+            <div id="level-up-message" style="display: none;">
+                <h3 style="color: #27ae60;">🎉 Level Up! 🎉</h3>
+                <p>Great job! You've advanced to the next level.</p>
+            </div>
+            <div id="retry-message" style="display: none;">
+                <h3 style="color: #e74c3c;">Keep Practicing!</h3>
+                <p>You need 70% or higher to advance. Let's review those missed questions.</p>
+            </div>
+        </div>
+        
+        <div class="lesson" id="personalized-lesson">
+            <h3>💡 Personalized Lesson</h3>
+            <p id="lesson-content">Based on your performance, here's what to focus on...</p>
+        </div>
+        
+        <div class="controls">
+            <button class="btn" onclick="nextRound()" id="next-round-btn">Next Round</button>
+            <button class="btn btn-secondary" onclick="resetGame()">Reset Progress</button>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+// Flashcard data
+var flashcardData = [
+    {
+        question: "What is the purpose of the __init__ method in a Python class?",
+        answer: "The __init__ method is a constructor that initializes an object's attributes when an instance of the class is created. It's automatically called when you create a new object.",
+        code_example: "def __init__(self, name):\n    self.name = name",
+        difficulty: "beginner",
+        category: "Class Basics"
+    },
+    {
+        question: "What does 'self' represent in Python class methods?",
+        answer: "self represents the instance of the class. It's used to access instance variables and methods within the class.",
+        code_example: "def get_name(self):\n    return self.name",
+        difficulty: "beginner",
+        category: "Class Basics"
+    },
+    {
+        question: "What is encapsulation in OOP?",
+        answer: "Encapsulation is bundling data (attributes) and methods that operate on that data within a single unit (class), and controlling access to them.",
+        code_example: "class Monitor:\n    def __init__(self):\n        self._private_data = []",
+        difficulty: "beginner",
+        category: "OOP Principles"
+    },
+    {
+        question: "What does psutil.cpu_percent() return?",
+        answer: "Returns the current system-wide CPU utilization as a percentage. With interval parameter, it compares CPU times elapsed before and after the interval.",
+        code_example: "cpu_usage = psutil.cpu_percent(interval=1)",
+        difficulty: "beginner",
+        category: "psutil Basics"
+    },
+    {
+        question: "What is the difference between psutil.virtual_memory() and psutil.swap_memory()?",
+        answer: "virtual_memory() returns statistics about system RAM usage, while swap_memory() returns information about swap memory (disk space used as virtual RAM).",
+        code_example: "ram = psutil.virtual_memory()\nswap = psutil.swap_memory()",
+        difficulty: "intermediate",
+        category: "Memory Monitoring"
+    },
+    {
+        question: "How do you get information about a specific process using psutil?",
+        answer: "Use psutil.Process(pid) to create a Process object for a specific PID, then call methods like name(), cpu_percent(), or memory_info().",
+        code_example: "p = psutil.Process(1234)\nname = p.name()\nmem = p.memory_info()",
+        difficulty: "intermediate",
+        category: "Process Management"
+    },
+    {
+        question: "What is pynvml used for?",
+        answer: "pynvml (Python NVIDIA Management Library) is used to monitor and manage NVIDIA GPUs, including VRAM usage, GPU utilization, and temperature.",
+        code_example: "import pynvml\npynvml.nvmlInit()",
+        difficulty: "beginner",
+        category: "GPU Monitoring"
+    },
+    {
+        question: "How do you get GPU memory information using pynvml?",
+        answer: "First get a handle to the device, then call nvmlDeviceGetMemoryInfo() to get total, free, and used VRAM.",
+        code_example: "handle = pynvml.nvmlDeviceGetHandleByIndex(0)\nmem = pynvml.nvmlDeviceGetMemoryInfo(handle)",
+        difficulty: "intermediate",
+        category: "GPU Monitoring"
+    },
+    {
+        question: "What is a class attribute vs an instance attribute?",
+        answer: "A class attribute is shared by all instances of a class, while an instance attribute is unique to each object instance.",
+        code_example: "class Monitor:\n    count = 0  # class attribute\n    def __init__(self):\n        self.name = 'mon'  # instance attribute",
+        difficulty: "intermediate",
+        category: "Class Basics"
+    },
+    {
+        question: "What is the purpose of @property decorator?",
+        answer: "@property allows you to define a method that can be accessed like an attribute, providing getter functionality with validation or computation.",
+        code_example: "@property\ndef cpu_usage(self):\n    return psutil.cpu_percent()",
+        difficulty: "intermediate",
+        category: "Properties & Decorators"
+    },
+    {
+        question: "What is inheritance in OOP?",
+        answer: "Inheritance allows a class to inherit attributes and methods from another class, promoting code reuse and hierarchical relationships.",
+        code_example: "class GPUMonitor(SystemMonitor):\n    def __init__(self):\n        super().__init__()",
+        difficulty: "intermediate",
+        category: "OOP Principles"
+    },
+    {
+        question: "What does the super() function do?",
+        answer: "super() returns a proxy object that allows you to call methods from a parent class, commonly used to call parent's __init__ method.",
+        code_example: "def __init__(self):\n    super().__init__()\n    self.gpu_count = 0",
+        difficulty: "intermediate",
+        category: "Inheritance"
+    },
+    {
+        question: "What is a context manager and how do you create one?",
+        answer: "A context manager manages resources and ensures cleanup. Created using __enter__ and __exit__ methods or @contextmanager decorator.",
+        code_example: "class Monitor:\n    def __enter__(self):\n        return self\n    def __exit__(self, *args):\n        self.cleanup()",
+        difficulty: "advanced",
+        category: "Advanced Python"
+    },
+    {
+        question: "What is the difference between __str__ and __repr__?",
+        answer: "__str__ returns a user-friendly string representation, while __repr__ returns an unambiguous representation useful for debugging.",
+        code_example: "def __str__(self):\n    return f'CPU: {self.cpu}%'\ndef __repr__(self):\n    return f'Monitor(cpu={self.cpu})'",
+        difficulty: "advanced",
+        category: "Magic Methods"
+    },
+    {
+        question: "What are class methods and when should you use them?",
+        answer: "Class methods use @classmethod decorator and take 'cls' as first parameter. They operate on the class itself, not instances, useful for factory methods.",
+        code_example: "@classmethod\ndef create_monitor(cls, config):\n    return cls(**config)",
+        difficulty: "advanced",
+        category: "Class Methods"
+    },
+    {
+        question: "What are static methods and when should you use them?",
+        answer: "Static methods use @staticmethod decorator and don't access class or instance data. They're utility functions logically grouped with the class.",
+        code_example: "@staticmethod\ndef format_bytes(bytes):\n    return f'{bytes/1024/1024:.2f} MB'",
+        difficulty: "advanced",
+        category: "Static Methods"
+    },
+    {
+        question: "How do you convert bytes to human-readable format in Python?",
+        answer: "Divide by powers of 1024 (or 1000) to get KB, MB, GB. Use f-strings for formatting.",
+        code_example: "def get_size(bytes):\n    for unit in ['B','KB','MB','GB','TB']:\n        if bytes < 1024:\n            return f'{bytes:.2f}{unit}'\n        bytes /= 1024",
+        difficulty: "intermediate",
+        category: "Data Formatting"
+    },
+    {
+        question: "What does the 'interval' parameter do in psutil.cpu_percent()?",
+        answer: "The interval parameter (in seconds) makes the function block and compare CPU usage over that time period, giving more accurate results.",
+        code_example: "cpu = psutil.cpu_percent(interval=1.0)  # 1 second",
+        difficulty: "intermediate",
+        category: "psutil Basics"
+    },
+    {
+        question: "How do you monitor multiple GPUs with pynvml?",
+        answer: "First get device count with nvmlDeviceGetCount(), then loop through indices to get handles and query each GPU.",
+        code_example: "count = pynvml.nvmlDeviceGetCount()\nfor i in range(count):\n    handle = pynvml.nvmlDeviceGetHandleByIndex(i)",
+        difficulty: "advanced",
+        category: "GPU Monitoring"
+    },
+    {
+        question: "What is the purpose of the oneshot() context manager in psutil?",
+        answer: "oneshot() caches process information internally, making multiple calls to process methods faster by avoiding repeated system calls.",
+        code_example: "with p.oneshot():\n    name = p.name()\n    cpu = p.cpu_percent()\n    mem = p.memory_info()",
+        difficulty: "advanced",
+        category: "Performance"
+    },
+    {
+        question: "Why do you need try-except blocks when monitoring processes?",
+        answer: "Processes can terminate between checking if they exist and accessing their information, causing NoSuchProcess exceptions.",
+        code_example: "try:\n    p = psutil.Process(pid)\n    info = p.memory_info()\nexcept psutil.NoSuchProcess:\n    print('Process ended')",
+        difficulty: "intermediate",
+        category: "Error Handling"
+    },
+    {
+        question: "What exception does pynvml raise when NVIDIA drivers aren't available?",
+        answer: "pynvml raises NVMLError_LibraryNotFound when NVIDIA drivers aren't installed or accessible.",
+        code_example: "try:\n    pynvml.nvmlInit()\nexcept pynvml.NVMLError:\n    print('NVIDIA drivers not found')",
+        difficulty: "intermediate",
+        category: "Error Handling"
+    }
+];
+
+// Game state
+var gameState = {
+    currentLevel: 1,
+    totalScore: 0,
+    currentRound: [],
+    currentQuestionIndex: 0,
+    roundResponses: [],
+    cardFlipped: false,
+    questionStats: {}, // Track performance per question
+    masteredQuestions: [], // Questions answered correctly 3+ times
+    missedQuestions: [] // Questions that need more practice
+};
+
+// Initialize question stats
+function initializeQuestionStats() {
+    for (var i = 0; i < flashcardData.length; i++) {
+        var question = flashcardData[i];
+        gameState.questionStats[i] = {
+            correct: 0,
+            missed: 0,
+            lastSeen: 0
+        };
+    }
+}
+
+// Screen management
+function showScreen(screenId) {
+    var screens = document.getElementsByClassName('screen');
+    for (var i = 0; i < screens.length; i++) {
+        screens[i].classList.remove('active');
+    }
+    document.getElementById(screenId).classList.add('active');
+}
+
+// Start the quiz
+function startQuiz() {
+    if (Object.keys(gameState.questionStats).length === 0) {
+        initializeQuestionStats();
+    }
+    generateRound();
+    showScreen('quiz-screen');
+    loadCurrentQuestion();
+}
+
+// Generate a round of 5 questions
+function generateRound() {
+    var availableQuestions = [];
+    
+    // Prioritize missed questions
+    for (var i = 0; i < gameState.missedQuestions.length && availableQuestions.length < 3; i++) {
+        availableQuestions.push(gameState.missedQuestions[i]);
+    }
+    
+    // Add other questions, avoiding mastered ones when possible
+    var otherQuestions = [];
+    for (var i = 0; i < flashcardData.length; i++) {
+        if (availableQuestions.indexOf(i) === -1 && gameState.masteredQuestions.indexOf(i) === -1) {
+            otherQuestions.push(i);
+        }
+    }
+    
+    // Shuffle other questions and add to fill the round
+    shuffleArray(otherQuestions);
+    while (availableQuestions.length < 5 && otherQuestions.length > 0) {
+        availableQuestions.push(otherQuestions.pop());
+    }
+    
+    // If still not enough, add from mastered (but these are less likely)
+    if (availableQuestions.length < 5) {
+        var masteredCopy = gameState.masteredQuestions.slice();
+        shuffleArray(masteredCopy);
+        while (availableQuestions.length < 5 && masteredCopy.length > 0) {
+            availableQuestions.push(masteredCopy.pop());
+        }
+    }
+    
+    // Shuffle final selection
+    shuffleArray(availableQuestions);
+    gameState.currentRound = availableQuestions.slice(0, 5);
+    gameState.currentQuestionIndex = 0;
+    gameState.roundResponses = [];
+    gameState.cardFlipped = false;
+}
+
+// Shuffle array in place
+function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+}
+
+// Load current question
+function loadCurrentQuestion() {
+    if (gameState.currentQuestionIndex >= gameState.currentRound.length) {
+        showRoundSummary();
+        return;
+    }
+    
+    var questionIndex = gameState.currentRound[gameState.currentQuestionIndex];
+    var question = flashcardData[questionIndex];
+    
+    // Update UI elements
+    document.getElementById('current-question').textContent = gameState.currentQuestionIndex + 1;
+    document.getElementById('total-questions').textContent = gameState.currentRound.length;
+    document.getElementById('current-level').textContent = gameState.currentLevel;
+    document.getElementById('total-score').textContent = gameState.totalScore;
+    
+    // Update progress bar
+    var progress = ((gameState.currentQuestionIndex) / gameState.currentRound.length) * 100;
+    document.getElementById('progress-bar').style.width = progress + '%';
+    
+    // Load question content
+    document.getElementById('question-text').textContent = question.question;
+    document.getElementById('answer-text').textContent = question.answer;
+    document.getElementById('difficulty-badge').textContent = question.difficulty;
+    document.getElementById('category-badge').textContent = question.category;
+    
+    // Handle code examples
+    var frontCodeExample = document.getElementById('code-example');
+    var backCodeExample = document.getElementById('answer-code');
+    
+    if (question.code_example) {
+        frontCodeExample.textContent = question.code_example;
+        frontCodeExample.style.display = 'block';
+        backCodeExample.textContent = question.code_example;
+        backCodeExample.style.display = 'block';
+    } else {
+        frontCodeExample.style.display = 'none';
+        backCodeExample.style.display = 'none';
+    }
+    
+    // Reset card state
+    document.getElementById('flashcard').classList.remove('flipped');
+    document.getElementById('response-buttons').style.display = 'none';
+    gameState.cardFlipped = false;
+}
+
+// Flip the flashcard
+function flipCard() {
+    if (!gameState.cardFlipped) {
+        document.getElementById('flashcard').classList.add('flipped');
+        document.getElementById('response-buttons').style.display = 'block';
+        gameState.cardFlipped = true;
+    }
+}
+
+// Mark the answer as correct or missed
+function markAnswer(isCorrect) {
+    if (!gameState.cardFlipped) return;
+    
+    var questionIndex = gameState.currentRound[gameState.currentQuestionIndex];
+    var response = {
+        questionIndex: questionIndex,
+        correct: isCorrect
+    };
+    
+    gameState.roundResponses.push(response);
+    
+    // Update question statistics
+    if (isCorrect) {
+        gameState.questionStats[questionIndex].correct++;
+        gameState.totalScore += 2;
+        
+        // Remove from missed questions if present
+        var missedIndex = gameState.missedQuestions.indexOf(questionIndex);
+        if (missedIndex > -1) {
+            gameState.missedQuestions.splice(missedIndex, 1);
+        }
+        
+        // Add to mastered if answered correctly 3+ times
+        if (gameState.questionStats[questionIndex].correct >= 3 && 
+            gameState.masteredQuestions.indexOf(questionIndex) === -1) {
+            gameState.masteredQuestions.push(questionIndex);
+        }
+    } else {
+        gameState.questionStats[questionIndex].missed++;
+        
+        // Add to missed questions if not already there
+        if (gameState.missedQuestions.indexOf(questionIndex) === -1) {
+            gameState.missedQuestions.push(questionIndex);
+        }
+    }
+    
+    // Move to next question
+    gameState.currentQuestionIndex++;
+    setTimeout(function() {
+        loadCurrentQuestion();
+    }, 500);
+}
+
+// Show round summary
+function showRoundSummary() {
+    var correctCount = 0;
+    var roundPoints = 0;
+    
+    for (var i = 0; i < gameState.roundResponses.length; i++) {
+        if (gameState.roundResponses[i].correct) {
+            correctCount++;
+            roundPoints += 2;
+        }
+    }
+    
+    var missedCount = gameState.roundResponses.length - correctCount;
+    var percentage = Math.round((correctCount / gameState.roundResponses.length) * 100);
+    var levelUp = percentage >= 70;
+    
+    // Update summary display
+    document.getElementById('correct-count').textContent = correctCount;
+    document.getElementById('missed-count').textContent = missedCount;
+    document.getElementById('percentage-score').textContent = percentage + '%';
+    document.getElementById('round-points').textContent = roundPoints;
+    
+    // Show level up or retry message
+    if (levelUp) {
+        document.getElementById('level-up-message').style.display = 'block';
+        document.getElementById('retry-message').style.display = 'none';
+        document.getElementById('summary-title').textContent = 'Excellent Work!';
+        gameState.currentLevel++;
+        document.getElementById('next-round-btn').textContent = 'Next Level';
+    } else {
+        document.getElementById('level-up-message').style.display = 'none';
+        document.getElementById('retry-message').style.display = 'block';
+        document.getElementById('summary-title').textContent = 'Keep Practicing!';
+        document.getElementById('next-round-btn').textContent = 'Try Again';
+    }
+    
+    // Generate personalized lesson
+    generatePersonalizedLesson();
+    
+    // Update progress bar to full
+    document.getElementById('progress-bar').style.width = '100%';
+    
+    showScreen('summary-screen');
+}
+
+// Generate personalized lesson based on performance
+function generatePersonalizedLesson() {
+    var missedCategories = {};
+    var strongCategories = {};
+    
+    // Analyze this round's performance
+    for (var i = 0; i < gameState.roundResponses.length; i++) {
+        var response = gameState.roundResponses[i];
+        var question = flashcardData[response.questionIndex];
+        var category = question.category;
+        
+        if (response.correct) {
+            strongCategories[category] = (strongCategories[category] || 0) + 1;
+        } else {
+            missedCategories[category] = (missedCategories[category] || 0) + 1;
+        }
+    }
+    
+    var lessonContent = '';
+    
+    // Focus on missed categories
+    var missedCategoryNames = Object.keys(missedCategories);
+    if (missedCategoryNames.length > 0) {
+        lessonContent += '<strong>Focus Areas:</strong><br>';
+        for (var i = 0; i < missedCategoryNames.length; i++) {
+            var category = missedCategoryNames[i];
+            lessonContent += '• <strong>' + category + '</strong>: ';
+            lessonContent += getCategoryTip(category) + '<br>';
+        }
+        lessonContent += '<br>';
+    }
+    
+    // Acknowledge strong areas
+    var strongCategoryNames = Object.keys(strongCategories);
+    if (strongCategoryNames.length > 0) {
+        lessonContent += '<strong>Strong Areas:</strong><br>';
+        for (var i = 0; i < strongCategoryNames.length; i++) {
+            lessonContent += '• ' + strongCategoryNames[i] + '<br>';
+        }
+    }
+    
+    // General encouragement
+    if (missedCategoryNames.length === 0) {
+        lessonContent = '<strong>Perfect Round!</strong><br>';
+        lessonContent += 'You demonstrated excellent understanding across all areas. Keep up the great work!';
+    } else if (missedCategoryNames.length === gameState.roundResponses.length) {
+        lessonContent += '<br><strong>Study Tip:</strong> Review the fundamentals and practice with the code examples. Don\'t worry - mastering OOP takes time!';
+    }
+    
+    document.getElementById('lesson-content').innerHTML = lessonContent;
+}
+
+// Get category-specific tips
+function getCategoryTip(category) {
+    var tips = {
+        'Class Basics': 'Review how classes are defined, __init__ methods, and the concept of self.',
+        'OOP Principles': 'Focus on encapsulation, inheritance, and polymorphism fundamentals.',
+        'psutil Basics': 'Practice with psutil documentation and understand different monitoring functions.',
+        'Memory Monitoring': 'Learn the difference between virtual memory, swap, and process memory.',
+        'Process Management': 'Study how to create Process objects and handle process lifecycle.',
+        'GPU Monitoring': 'Familiarize yourself with pynvml initialization and device management.',
+        'Properties & Decorators': 'Understand @property, @classmethod, and @staticmethod use cases.',
+        'Inheritance': 'Practice with super() and method overriding concepts.',
+        'Advanced Python': 'Focus on context managers, magic methods, and advanced patterns.',
+        'Magic Methods': 'Study __str__, __repr__, and other special methods.',
+        'Class Methods': 'Learn when to use @classmethod vs regular instance methods.',
+        'Static Methods': 'Understand when @staticmethod is appropriate for utility functions.',
+        'Data Formatting': 'Practice data conversion and formatting techniques.',
+        'Performance': 'Learn optimization techniques like psutil.oneshot().',
+        'Error Handling': 'Practice proper exception handling in system monitoring.'
+    };
+    
+    return tips[category] || 'Review the concepts and practice with real code examples.';
+}
+
+// Start next round
+function nextRound() {
+    showScreen('quiz-screen');
+    generateRound();
+    loadCurrentQuestion();
+}
+
+// Reset the entire game
+function resetGame() {
+    gameState = {
+        currentLevel: 1,
+        totalScore: 0,
+        currentRound: [],
+        currentQuestionIndex: 0,
+        roundResponses: [],
+        cardFlipped: false,
+        questionStats: {},
+        masteredQuestions: [],
+        missedQuestions: []
+    };
+    
+    initializeQuestionStats();
+    showScreen('welcome-screen');
+}
+
+// Initialize the app
+window.onload = function() {
+    // App is ready, no initialization needed
+};
+</script>
+
+</body>
+</html>
