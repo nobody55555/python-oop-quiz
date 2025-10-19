@@ -24,7 +24,7 @@ This is a self-contained HTML5 quiz application that helps you master Python OOP
 
 ## 🚀 Try it Live
 
-**[Launch the Quiz](https://nobody55555.github.io/python-oop-quiz/)**
+**[Launch the Quiz](https://nobody55555.github.io/python-oop-quiz/Python_OOP_System_Monitor_Quiz.html)**
 
 ## 📖 How to Use
 
